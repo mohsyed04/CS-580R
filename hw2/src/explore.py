@@ -25,10 +25,10 @@ state_dict_ = {
 left_Count = 0
 count = 0
     
-def clbk_laser(msg):
-    global regions_
+def clbk_laser(msg): # the ranges array is the laser scan results returned by the /scan topic, it consists of 640 points spread 
+    global regions_  # over 180 degrees. The regions are divided almost equally into 5 parts. . 
     regions_ = {
-        'right':  min(min(msg.ranges[0:128]),   10),
+        'right':  min(min(msg.ranges[0:128]),   10), 
         'fright': min(min(msg.ranges[129:256]), 10),
         'front':  min(min(msg.ranges[257:384]), 10),
         'fleft':  min(min(msg.ranges[385:512]), 10),
