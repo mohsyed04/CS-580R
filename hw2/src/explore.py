@@ -25,10 +25,10 @@ state_dict_ = {
 left_Count = 0
 count = 0
     
-def clbk_laser(msg): # the ranges array is the laser scan results returned by the /scan topic, it consists of 640 points spread 
-    global regions_  # over 180 degrees. The regions are divided almost equally into 5 parts. . 
+def clbk_laser(msg):
+    global regions_
     regions_ = {
-        'right':  min(min(msg.ranges[0:128]),   10), 
+        'right':  min(min(msg.ranges[0:128]),   10),
         'fright': min(min(msg.ranges[129:256]), 10),
         'front':  min(min(msg.ranges[257:384]), 10),
         'fleft':  min(min(msg.ranges[385:512]), 10),
@@ -60,9 +60,15 @@ def take_action():
     
     if regions['front'] > d and regions['fright'] > d and regions['fleft'] > d and regions['right'] > d and regions['left'] > d: #find wall
         print('1 fw')
-        change_state(0)
+        change_state(0) 
 
     if regions['front'] > d and regions['fleft'] > d and regions['fright'] > d and regions['right'] > d: #go straight
+        change_state(2)
+
+    if regions['front'] > d and regions['fleft'] > d and regions['fright'] > d and regions['right'] > d and regions['fleft'] > d: #go straight
+        change_state(2)
+
+    if regions['front'] > d and regions['fleft'] > d and regions['fright'] < d and regions['right'] < d1 and regions['fleft'] > d: #go straight
         change_state(2)
 
     if regions['front'] < d and regions['fleft'] > d and regions['fright'] > d: #turn left
@@ -88,11 +94,14 @@ def take_action():
     if regions['front'] > d and regions['fleft'] < d and regions['fright'] < d: #find wall
         change_state(0)
 
-    if regions['right'] > 3 and regions['front'] > d and regions['fleft'] > d and regions['left'] > d : #turn right
+    if regions['right'] > 2.5 and regions['front'] > d and regions['fleft'] > d and regions['left'] > d : #turn right
         change_state(3)
 
-    if regions['right'] > 3 and regions['front'] < d and regions['fleft'] < d and regions['left'] < d : #turn right '''regions['fright'] > d1 and '''
+    if regions['right'] > 3 and regions['fright'] > d1 and regions['fright'] < d :#regions['front'] > d and regions['fleft'] > d and regions['left'] > d : #turn right
         change_state(3)
+
+    #if regions['right'] > 2.5 and regions['front'] < d and regions['fleft'] < d and regions['left'] < d : #turn right '''regions['fright'] > d1 and '''
+     #   change_state(3)
 
     if regions['front'] < d1 and regions['fright'] < d1 and regions['fleft'] < d1 : #too close to wall
         change_state(4)
@@ -135,8 +144,8 @@ def turn_left():
 def turn_right():
     print('turn_right')
     msg = Twist()
-    msg.linear.x = 0.2
-    msg.angular.z = -0.4
+    msg.linear.x = 0.1
+    msg.angular.z = -0.3
     left_Count = 0
     #ospy.sleep(5)
     return msg
