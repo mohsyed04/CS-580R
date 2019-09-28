@@ -78,7 +78,7 @@ def take_action():
     elif regions['front'] > d and regions['left'] < d and regions['fleft'] < d: #adjust right
     	change_state(5)
 
-    elif regions['right'] > d2 and regions['fright'] > d1 and regions['fright'] < d2 and regions['front'] < d or regions['front'] > d or regions['fleft'] < d or regions['fleft'] > d: #turn right
+    elif regions['right'] > d2 and regions['fright'] > d1 and regions['fright'] < d2 : #turn right
     	change_state(3)
     	
     elif regions['front'] < d:
