@@ -19,7 +19,8 @@ state_dict_ = {
     1: 'turn left',
     2: 'follow the wall',
     3: 'turn right',
-    4: 'reverse',
+    4: 'adjust_left',
+    5: 'adjust_right',
 }
 
 left_Count = 0
@@ -55,68 +56,34 @@ def take_action():
     
     state_description = ''
     
-    d = 1.5
-    d1 = 0.3
+    d = 1.3
+    d1 = 0.5
+    d2 = 2.0
     
-    if regions['front'] > d and regions['fright'] > d and regions['fleft'] > d and regions['right'] > d and regions['left'] > d: #find wall
-        print('1 fw')
-        change_state(0) 
-
-    if regions['front'] > d and regions['fleft'] > d and regions['fright'] > d and regions['right'] > d: #go straight
-        change_state(2)
-
-    if regions['front'] > d and regions['fleft'] > d and regions['fright'] > d and regions['right'] > d and regions['fleft'] > d: #go straight
-        change_state(2)
-
-    if regions['front'] > d and regions['fleft'] > d and regions['fright'] < d and regions['right'] < d1 and regions['fleft'] > d: #go straight
-        change_state(2)
-
-    if regions['front'] < d and regions['fleft'] > d and regions['fright'] > d: #turn left
-        change_state(1)
-
-    if regions['front'] > d and regions['fleft'] > d and regions['fright'] < d: #go straight
-        change_state(2)
-
-    if regions['front'] > d and regions['fleft'] < d and regions['fright'] > d: #find wall #changed from 0 to 1 turn left
-        print('2nd fw')
-        change_state(2)
-
-    if regions['front'] < d and regions['fleft'] > d and regions['fright'] < d: #turn left 
-        state_description = 'case 5 - front and fright'
-        change_state(1)
-
-    if regions['front'] < d and regions['fleft'] < d and regions['fright'] > d: #turn left
-        change_state(1)
-
-    if regions['front'] < d and regions['fleft'] < d and regions['fright'] < d: #turn left
-        change_state(1)
-
-    if regions['front'] > d and regions['fleft'] < d and regions['fright'] < d: #find wall
+    if regions['front'] > d and regions['fleft'] > d and regions['fright'] > d: #find wall
         change_state(0)
 
-    if regions['right'] > 2.5 and regions['front'] > d and regions['fleft'] > d and regions['left'] > d : #turn right
-        change_state(3)
+    elif regions['front'] > d and regions['fleft'] < d and regions['fright'] < d: 
+        change_state(0)
 
-    if regions['right'] > 3 and regions['fright'] > d1 and regions['fright'] < d :#regions['front'] > d and regions['fleft'] > d and regions['left'] > d : #turn right
-        change_state(3)
-
-    #if regions['right'] > 2.5 and regions['front'] < d and regions['fleft'] < d and regions['left'] < d : #turn right '''regions['fright'] > d1 and '''
-     #   change_state(3)
-
-    if regions['front'] < d1 and regions['fright'] < d1 and regions['fleft'] < d1 : #too close to wall
-        change_state(4)
-
-    if regions['front'] < d1 or regions['fright'] < d1 or regions['fleft'] < d1 or regions['right'] < d1 or regions['left'] < d1 : #too close to wall
-        change_state(4)
-
-    if regions['front'] > 2 and regions['fright'] < d and regions['fleft'] > d and regions['left'] > d and regions['right'] < d: #go straight
+    elif regions['front'] > d and regions['fleft'] > d and regions['fright'] < d: #go straight
         change_state(2)
 
-    if regions['front'] > 2 and regions['fright'] <= 2 and regions['fleft'] > d and regions['left'] > d and regions['right'] < d: #go straight
-        change_state(2)
+    elif regions['front'] > d and regions['fleft'] < d and regions['fright'] > d: #find wall
+        change_state(0)
 
-    else:
-        pass        
+    elif regions['front'] > d and regions['right'] < d and regions['fright'] < d: #adjust left
+    	change_state(4)
+
+    elif regions['front'] > d and regions['left'] < d and regions['fleft'] < d: #adjust right
+    	change_state(5)
+
+    elif regions['right'] > d2 and regions['fright'] > d1 and regions['fright'] < d2 and regions['front'] < d or regions['front'] > d or regions['fleft'] < d or regions['fleft'] > d: #turn right
+    	change_state(3)
+    	
+    elif regions['front'] < d:
+    	change_state(1)
+               
         #state_description = 'unknown case'
         #rospy.loginfo(regions)
 
@@ -136,7 +103,7 @@ def turn_left():
     global left_Count
     print('turn_left')
     msg = Twist()
-    msg.angular.z = 0.5
+    msg.angular.z = 0.3
     left_Count += 1
     #rospy.sleep(5)
     return msg
@@ -144,8 +111,8 @@ def turn_left():
 def turn_right():
     print('turn_right')
     msg = Twist()
-    msg.linear.x = 0.1
-    msg.angular.z = -0.3
+    #msg.linear.x = 0.1
+    msg.angular.z = -0.5
     left_Count = 0
     #ospy.sleep(5)
     return msg
@@ -157,12 +124,18 @@ def follow_the_wall():
     msg.linear.x = 0.6
     #rospy.sleep(5)
     return msg
-def reverse():
-    print('reverse')
-    msg = Twist()
-    msg.linear.x = - 0.6
-    ms.angular.z = 0.3
 
+def adjust_left():
+    print('adjust_left')
+    msg = Twist()
+    msg.angular.z = 0.1
+    return msg
+
+def adjust_right():
+    print('adjust_right')
+    msg = Twist()
+    msg.angular.z = -0.1
+    return msg
 
     
 def main():
@@ -184,7 +157,9 @@ def main():
         elif state_ == 3:
             msg = turn_right()
         elif state_ == 4:
-            msg = reverse()
+            msg = adjust_left()
+        elif state_ == 5:
+            msg = adjust_right()
         elif state_ == 2:
             msg = follow_the_wall()
             pass
