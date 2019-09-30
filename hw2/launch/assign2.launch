@@ -1,5 +1,12 @@
 <launch>
-    <node name="gazebo" pkg="turtlebot_gazebo" type="turtlebot_gazebo" args="$(find hw2)/kinetic.world" output="screen" respawn="false"/>
-    <node name="rviz" pkg="rviz" type="rviz"/>
-    <node name="turtle_explorer" pkg="hw2" type="explore3.py"/>
+<include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch">
+<arg name="world_file" value="$(find hw2)/kinetic.world"/>
+</include>
+
+<include file="$(find turtlebot_gazebo)/launch/gmapping_demo.launch"/>
+
+<include file="$(find turtlebot_rviz_launchers)/launch/view_navigation.launch"/>
+
+<node pkg="hw2" name="explore" type="explore3.py" output="screen"/>
 </launch>
+
