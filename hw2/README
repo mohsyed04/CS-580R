@@ -1,5 +1,7 @@
 Tutorial followed: http://www.theconstructsim.com/wall-follower-algorithm/
 
+Team: Mohi Uddin Syed and Evan Moeller
+
 I was trying to make the robot take a right turn (or take the exit using the door) whenever possible because this way it will be
 able to cover maximum ground but the robot seems to just ignore the door everytime except when it is right infront of it. Also,the
 TA said that its impossible to make the robot run perfectly and cover the whole map,so, I guess, anything presentable should be 

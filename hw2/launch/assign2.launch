@@ -1,0 +1,5 @@
+<launch>
+    <node name="gazebo" pkg="turtlebot_gazebo" type="turtlebot_gazebo" args="$(find hw2)/kinetic.world" output="screen" respawn="false"/>
+    <node name="rviz" pkg="rviz" type="rviz"/>
+    <node name="turtle_explorer" pkg="hw2" type="explore3.py"/>
+</launch>
