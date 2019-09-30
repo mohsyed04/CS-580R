@@ -16,7 +16,7 @@ regions_ = {
 }
 state_ = 0
 state_dict_ = {
-    0: 'random',
+    0: 'rMove',
     1: 'tracing wall',
     2: 'right',
     3: 'left'
@@ -55,6 +55,9 @@ def take_action():
     if regions['front'] > distance and regions['fleft'] > distance and regions['fright'] > distance: #no block
         change_state(0)
 
+    elif regions['front'] > distance and regions['right'] > 0.5 and regions['fright'] < 0.5: #prevent collision
+        change_state(3)
+
     elif regions['front'] > distance and regions['fleft'] > distance and regions['fright'] < distance: #right block
         change_state(1)
 
@@ -62,7 +65,7 @@ def take_action():
         change_state(2)
 
     elif regions['front'] < distance and regions['fleft'] > distance and regions['fright'] > distance: #front block
-        change_state(3)
+        change_state(2)
 
     elif regions['front'] > distance and regions['fleft'] < distance and regions['fright'] < distance: #left-right block
         change_state(1)
@@ -71,27 +74,27 @@ def take_action():
         change_state(2)
 
     elif regions['front'] < distance and regions['fleft'] > distance and regions['fright'] < distance: #right-front block
-        change_state(3)
+        change_state(2)
 
     elif regions['front'] < distance and regions['fleft'] < distance and regions['fright'] < distance: #all block
-        change_state(3)
+        change_state(2)
 
     else:
         pass
 
-def randomMovement():
+def rMovement():
     global distance
 
     #get random values for angular velocity
     angle = random.random()
 
     #randomly turn left or right
-    direc = random.randrange(1)
-    angle = angle - direc
+    #direc = random.randrange(1)
+    angle = 0.5
 
     #move the robot
     msg = Twist()
-    msg.linear.x = 0.5
+    msg.linear.x = 0.7
     msg.angular.z = angle
     return msg
 
@@ -105,7 +108,7 @@ def tracingWall():
 
 def turningRight():
     msg = Twist()
-    msg.angular.z = -0.5
+    msg.angular.z = -0.25
     return msg
 
 def turningLeft():
@@ -126,7 +129,7 @@ def main():
     while not rospy.is_shutdown():
         msg = Twist()
         if state_ == 0:
-            msg = randomMovement()
+            msg = rMovement()
         elif state_ == 1:
             msg = tracingWall()
         elif state_ == 2:
